@@ -73,6 +73,7 @@
   },
   "projectStructure": {
     "description": "MyBatis SQL Relationship Analyzer - A tool for analyzing MyBatis XML files to extract database table relationships",
+    "version": "1.2.0",
     "rootFiles": {
       "app.py": "Main entry point for the web application",
       "__init__.py": "Package initialization file",
@@ -103,8 +104,24 @@
         "description": "Web interface components",
         "files": {
           "app.py": "Flask web application",
-          "templates": "HTML templates for the web UI",
-          "static": "Static assets (CSS, JavaScript, images)"
+          "templates": {
+            "description": "HTML templates for the web UI",
+            "files": {
+              "index.html": "Main UI template with JointJS integration for interactive ER diagrams"
+            }
+          },
+          "static": {
+            "description": "Static assets (CSS, JavaScript, images)",
+            "files": {
+              "css": {
+                "style.css": "Custom styles including JointJS diagram styling"
+              },
+              "js": {
+                "script.js": "Main JavaScript for handling form submission and results display",
+                "er-diagram.js": "JointJS-based interactive ER diagram rendering and manipulation"
+              }
+            }
+          }
         }
       },
       "tests": {
@@ -124,7 +141,18 @@
       "2": "SQL is normalized by normalizer.py",
       "3": "Relationships are extracted by relationship_extractor.py",
       "4": "Results are transformed to PlantUML by plantuml_generator.py",
-      "5": "Output is exported via exporter.py in various formats"
+      "5": "Output is exported via exporter.py in various formats",
+      "6": "Web UI renders interactive ER diagrams using JointJS in er-diagram.js"
+    },
+    "newFeatures": {
+      "v1.2.0": {
+        "Interactive ER Diagrams": "Client-side ER diagram rendering using JointJS",
+        "Entity Manipulation": "Drag-and-drop positioning of database entities",
+        "Zoom Controls": "Interactive zoom in/out and fit-to-view capabilities",
+        "Field Relationship Labels": "Relationship field names displayed on connection lines",
+        "Direct SVG/PNG Export": "Browser-side diagram export without server rendering",
+        "Enhanced Dark Mode": "Theme-aware diagram rendering with appropriate contrast"
+      }
     }
   }
 } 

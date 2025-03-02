@@ -1,7 +1,7 @@
 # MyBatis SQL Relationship Analyzer
 # MyBatis SQL 关系分析工具
 
-![Version](https://img.shields.io/badge/version-1.1.0-blue)
+![Version](https://img.shields.io/badge/version-1.2.0-blue)
 ![Python](https://img.shields.io/badge/python-3.6+-green)
 ![License](https://img.shields.io/badge/license-MIT-orange)
 
@@ -13,11 +13,11 @@
 
 ## Overview
 
-This tool analyzes SQL statements in MyBatis XML files within SpringBoot projects to automatically extract database table relationships. It features a web interface for specifying directories to analyze, generates interactive PlantUML diagrams and structured relationship lists, supports copying PlantUML results, and renders results directly in the interface.
+This tool analyzes SQL statements in MyBatis XML files within SpringBoot projects to automatically extract database table relationships. It features a web interface for specifying directories to analyze, generates interactive ER diagrams using JointJS, structured relationship lists, supports copying PlantUML results, and renders results directly in the interface.
 
 ## 概述
 
-本工具用于分析 SpringBoot 项目中 MyBatis XML 文件中的 SQL 语句，自动提取数据库表关联关系，支持通过 Web 界面指定目录进行分析，生成可交互的 PlantUML 图表和结构化关系列表，支持将plantuml结果复制出来，以及支持在界面直接渲染出结果。
+本工具用于分析 SpringBoot 项目中 MyBatis XML 文件中的 SQL 语句，自动提取数据库表关联关系，支持通过 Web 界面指定目录进行分析，使用 JointJS 生成可交互的 ER 图表和结构化关系列表，支持将plantuml结果复制出来，以及支持在界面直接渲染出结果。
 
 ---
 
@@ -45,19 +45,30 @@ This tool analyzes SQL statements in MyBatis XML files within SpringBoot project
   根据命名模式和使用上下文自动识别潜在的主键和外键关系。
 
 ### 2. Visualization / 可视化展示
+- **Interactive ER Diagram / 交互式 ER 图表** 🆕  
+  New in v1.2: Interactive Entity-Relationship diagrams rendered directly in the browser using JointJS.  
+  v1.2新功能：使用 JointJS 直接在浏览器中渲染交互式实体关系图表。  
+  Features include:  
+  功能包括：
+  - Drag-and-drop entity positioning / 实体拖放定位
+  - Zoom in/out capabilities / 缩放功能
+  - Automatic layout optimization / 自动布局优化
+  - Field relationship visualization / 字段关系可视化
+  - Dark mode support / 暗黑模式支持
+  
 - **Smart Chart Layout / 智能图表布局**  
-  Automatically applies PlantUML layout engine to optimize initial node positions and prevent overlapping.  
-  自动应用 PlantUML 布局引擎，优化节点初始位置防止重叠。  
+  Automatically applies layout engine to optimize initial node positions and prevent overlapping.  
+  自动应用布局引擎，优化节点初始位置防止重叠。  
   Supports manual dragging to adjust node positions.  
   支持手动拖动调整节点位置。  
   Frontend rendering of scanned tables and relationship results with automatic layout.  
   前端支持渲染出扫描的表、关系结果，并自动进行布局，优化节点初始位置防止重叠。
   
 - **Dual View Presentation / 双视图呈现**  
-  **Chart View / 图表视图**: Table structure + relationship connection lines.  
+  **Chart View / 图表视图**: Interactive ER diagram with draggable entities + relationship lines.  
   **List View / 列表视图**: Relationship details + file source information.
 
-- **Dark Mode Support / 暗黑模式支持** 🆕  
+- **Dark Mode Support / 暗黑模式支持**  
   Switch between light and dark themes for comfortable viewing in different environments.  
   在不同环境下提供舒适的浏览体验，支持在浅色和深色主题之间切换。
 
@@ -127,20 +138,43 @@ python -m flask run --host=0.0.0.0 --port=5000
    ```
 
 3. **View analysis results / 查看分析结果**  
-   - **Chart View / 图表视图**: Interactive UML diagram  
-     自动渲染的 UML 图表
+   - **Chart View / 图表视图**: Interactive JointJS ER diagram with draggable entities  
+     使用 JointJS 的交互式 ER 图表，支持拖拽实体
    - **List View / 列表视图**: Expandable relationship details  
      可展开查看关联 SQL 片段
-   - **Export Options / 导出选项**: PNG/SVG/CSV/JSON/Markdown formats 🆕  
+   - **PlantUML View / PlantUML 视图**: Traditional PlantUML code  
+     传统的 PlantUML 代码
+   - **Export Options / 导出选项**: PNG/SVG/CSV/JSON/Markdown formats  
      PNG/SVG/CSV/JSON/Markdown 五种格式
 
-4. **Toggle Dark Mode / 切换暗黑模式** 🆕  
+4. **ER Diagram Interaction / ER 图表交互** 🆕  
+   - **Drag entities**: Reposition tables for better visualization  
+     拖动实体：重新定位表格以获得更好的可视化效果
+   - **Zoom controls**: Zoom in/out and fit content to view  
+     缩放控制：放大/缩小和适应内容到视图
+   - **Download diagrams**: Export as SVG or PNG directly from the browser  
+     下载图表：直接从浏览器导出为 SVG 或 PNG
+
+5. **Toggle Dark Mode / 切换暗黑模式**  
    Click the theme toggle button in the top-right corner to switch between light and dark themes.  
    点击右上角的主题切换按钮，在浅色和深色主题之间切换。
 
 ---
 
 ## 📊 Output Examples / 输出示例
+
+### Interactive ER Diagram / 交互式 ER 图表 🆕
+The interactive diagram allows you to:
+- Drag entities to custom positions
+- Zoom in/out for detailed view
+- See field relationships with labels
+- Export as SVG or PNG directly
+
+交互式图表允许您：
+- 将实体拖动到自定义位置
+- 放大/缩小以获得详细视图
+- 通过标签查看字段关系
+- 直接导出为 SVG 或 PNG
 
 ### PlantUML Diagram Example / PlantUML 图表示例
 ```plantuml
@@ -240,15 +274,15 @@ Edit `.env` file to customize:
 
 ---
 
-## 🆕 What's New in v1.1.0 / 新版本1.1.0功能
+## 🆕 What's New in v1.2.0 / 新版本1.2.0功能
 
-- **Subquery Analysis / 子查询分析**: Full support for nested query relationship extraction.
-- **Enhanced SQL Parsing / 增强的SQL解析**: Improved handling of complex SQL patterns.
-- **Primary/Foreign Key Detection / 主键/外键检测**: Automatic identification of key relationships.
-- **Dark Mode / 暗黑模式**: Comfortable viewing experience in low-light environments.
-- **Additional Export Formats / 更多导出格式**: New JSON and Markdown export options.
-- **Relationship Indicators / 关系指示器**: Visual indicators for foreign and primary keys in the UI.
-- **Performance Optimization / 性能优化**: Faster processing for large codebases.
+- **Interactive ER Diagrams / 交互式ER图表**: Fully interactive entity-relationship diagrams rendered directly in the browser using JointJS.
+- **Drag & Drop Interface / 拖拽式界面**: Reposition entities by dragging for custom layouts.
+- **Zoom Controls / 缩放控制**: Zoom in/out and fit diagram to view for better visualization.
+- **Direct SVG/PNG Export / 直接SVG/PNG导出**: Export diagrams directly from the browser without server-side rendering.
+- **Field Relationship Labels / 字段关系标签**: Field names displayed on relationship lines for better understanding.
+- **Dark Mode Improvements / 暗黑模式改进**: Enhanced dark mode support for diagrams with proper contrast.
+- **Performance Optimization / 性能优化**: Faster diagram rendering with client-side processing.
 
 ---
 

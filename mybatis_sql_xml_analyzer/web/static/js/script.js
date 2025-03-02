@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
             results.classList.remove('d-none');
             
             // Update diagram
-            updateDiagram(data);
+            updateDiagram(data.diagram);
             
             // Update relationships table
             updateRelationshipsTable(data.relationships);
@@ -97,6 +97,9 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Enable export buttons
             enableExportButtons(data);
+            
+            // Render the JointJS diagram
+            renderERDiagram(data.relationships);
         })
         .catch(error => {
             console.error('Error:', error);
@@ -138,14 +141,45 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Update diagram
-    function updateDiagram(data) {
-        // Encode PlantUML for image URL
-        const encodedDiagram = encodePlantUML(data.diagram);
-        diagramImage.src = `http://www.plantuml.com/plantuml/svg/${encodedDiagram}`;
+    function updateDiagram(plantUmlCode) {
+        // Store the PlantUML code for the PlantUML tab
+        const codeElement = document.getElementById('plantuml-code');
+        if (codeElement) {
+            codeElement.textContent = plantUmlCode;
+        }
         
-        // If dark theme is active, use dark background version
-        if (document.documentElement.getAttribute('data-theme') === 'dark') {
-            diagramImage.src = `http://www.plantuml.com/plantuml/svg/${encodedDiagram}?theme=dark`;
+        // Set up copy button functionality
+        const copyButton = document.getElementById('copy-plantuml-btn');
+        if (copyButton) {
+            copyButton.addEventListener('click', function() {
+                navigator.clipboard.writeText(plantUmlCode).then(function() {
+                    copyButton.innerHTML = '<i class="bi bi-check me-1"></i> Copied!';
+                    setTimeout(function() {
+                        copyButton.innerHTML = '<i class="bi bi-clipboard me-1"></i> Copy';
+                    }, 2000);
+                });
+            });
+        }
+        
+        // Set up download button functionality
+        const downloadPlantUmlBtn = document.getElementById('download-plantuml-btn');
+        if (downloadPlantUmlBtn) {
+            downloadPlantUmlBtn.disabled = false;
+            // Make sure we only add one event listener
+            downloadPlantUmlBtn.removeEventListener('click', downloadPlantUml);
+            downloadPlantUmlBtn.addEventListener('click', downloadPlantUml);
+        }
+        
+        function downloadPlantUml() {
+            const blob = new Blob([plantUmlCode], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'diagram.puml';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
     }
     
@@ -218,8 +252,8 @@ document.addEventListener('DOMContentLoaded', function() {
         updateThemeIcon(newTheme);
         
         // Update diagram if it exists
-        if (currentResults && diagramImage.src) {
-            updateDiagram(currentResults);
+        if (currentResults && plantumlCode.textContent) {
+            updateDiagram(plantumlCode.textContent);
         }
     }
     
@@ -355,5 +389,56 @@ document.addEventListener('DOMContentLoaded', function() {
         // This is just a placeholder - in a real app, use a proper deflate algorithm
         // For production, use a library like pako
         return s;
+    }
+
+    function displayResults(data) {
+        // Show results container
+        document.getElementById('results').classList.remove('d-none');
+        document.getElementById('loading').classList.add('d-none');
+        
+        // Update result message
+        const resultMessage = document.getElementById('result-message');
+        resultMessage.textContent = `Found ${data.relationships.length} table relationships from ${data.stats.total_files} files.`;
+        
+        // Render JointJS diagram with relationship data
+        renderERDiagram(data.relationships);
+        
+        // Update relationships table
+        const tableBody = document.querySelector('#relationships-table tbody');
+        tableBody.innerHTML = '';
+        
+        data.relationships.forEach(rel => {
+            const row = document.createElement('tr');
+            
+            const sourceTableCell = document.createElement('td');
+            sourceTableCell.textContent = rel.source_table;
+            row.appendChild(sourceTableCell);
+            
+            const sourceFieldCell = document.createElement('td');
+            sourceFieldCell.textContent = rel.source_field;
+            row.appendChild(sourceFieldCell);
+            
+            const targetTableCell = document.createElement('td');
+            targetTableCell.textContent = rel.target_table;
+            row.appendChild(targetTableCell);
+            
+            const targetFieldCell = document.createElement('td');
+            targetFieldCell.textContent = rel.target_field;
+            row.appendChild(targetFieldCell);
+            
+            const sourceFileCell = document.createElement('td');
+            sourceFileCell.textContent = rel.source_file;
+            row.appendChild(sourceFileCell);
+            
+            tableBody.appendChild(row);
+        });
+        
+        // Update PlantUML code - use existing updateDiagram function
+        updateDiagram(data.plantuml_code);
+        
+        // Enable download buttons
+        document.getElementById('download-csv-btn').disabled = false;
+        document.getElementById('download-json-btn').disabled = false;
+        document.getElementById('download-markdown-btn').disabled = false;
     }
 }); 
