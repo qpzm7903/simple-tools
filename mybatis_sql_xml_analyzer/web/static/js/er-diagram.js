@@ -32,6 +32,9 @@ function initializeERDiagram() {
         cellViewNamespace: namespace
     });
     
+    // Setup element interaction behaviors
+    setupElementInteractions();
+    
     // Setup panning behavior
     setupPanning();
     
@@ -58,6 +61,32 @@ function initializeERDiagram() {
     });
 }
 
+// Setup element interaction behaviors
+function setupElementInteractions() {
+    // When clicking on an element, highlight it and prepare for dragging
+    paper.on('element:pointerdown', function(elementView, evt) {
+        // Prevent panning when interacting with elements
+        evt.stopPropagation();
+        
+        // Change cursor to indicate dragging
+        elementView.el.style.cursor = 'grabbing';
+        
+        // Optional: Add visual feedback like highlighting
+        elementView.model.attr('body/stroke', '#2196F3');
+        elementView.model.attr('body/strokeWidth', 3);
+    });
+    
+    // When dragging is done, reset the styling
+    paper.on('element:pointerup', function(elementView) {
+        // Reset cursor
+        elementView.el.style.cursor = '';
+        
+        // Reset highlighting
+        elementView.model.attr('body/stroke', 'var(--entity-border-color, #333)');
+        elementView.model.attr('body/strokeWidth', 2);
+    });
+}
+
 // Setup panning functionality
 function setupPanning() {
     const canvas = document.getElementById('diagram-canvas');
@@ -78,12 +107,17 @@ function setupPanning() {
     
     // Mouse down - start panning timer
     canvas.addEventListener('mousedown', function(e) {
-        // Only proceed if we're not over an element
+        // More comprehensive check for diagram elements
         const elementBelow = document.elementFromPoint(e.clientX, e.clientY);
-        if (elementBelow && (elementBelow.tagName.toLowerCase() === 'rect' || 
-                            elementBelow.tagName.toLowerCase() === 'text' ||
-                            elementBelow.tagName.toLowerCase() === 'path')) {
-            return; // Skip if we're clicking on diagram elements
+        
+        // Check if we're clicking on any diagram elements (including SVG group elements)
+        if (elementBelow) {
+            // Get the closest SVG element or group
+            const svgElement = elementBelow.closest('g.joint-cell, rect, text, path, circle');
+            if (svgElement) {
+                // We're on a diagram element, don't start panning
+                return;
+            }
         }
         
         // Store initial mouse position
@@ -254,6 +288,15 @@ function createRelationship(sourceEntity, targetEntity, sourceField, targetField
     const link = new joint.shapes.standard.Link({
         source: { id: sourceEntity.id },
         target: { id: targetEntity.id },
+        router: { 
+            name: 'manhattan', 
+            args: {
+                padding: 20,
+                startDirections: ['right', 'bottom', 'top', 'left'],
+                endDirections: ['left', 'bottom', 'top', 'right']
+            } 
+        },
+        connector: { name: 'rounded' },
         attrs: {
             line: {
                 stroke: 'var(--relationship-line-color, #333)',
