@@ -118,7 +118,7 @@
               },
               "js": {
                 "script.js": "Main JavaScript for handling form submission and results display",
-                "er-diagram.js": "JointJS-based interactive ER diagram rendering and manipulation"
+                "er-diagram.js": "JointJS-based interactive ER diagram rendering and manipulation with canvas panning"
               }
             }
           }
@@ -148,6 +148,7 @@
       "v1.2.0": {
         "Interactive ER Diagrams": "Client-side ER diagram rendering using JointJS",
         "Entity Manipulation": "Drag-and-drop positioning of database entities",
+        "Canvas Panning": "Hold left mouse button on empty canvas areas to navigate large diagrams",
         "Zoom Controls": "Interactive zoom in/out and fit-to-view capabilities",
         "Field Relationship Labels": "Relationship field names displayed on connection lines",
         "Direct SVG/PNG Export": "Browser-side diagram export without server rendering",

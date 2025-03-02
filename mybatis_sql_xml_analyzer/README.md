@@ -51,6 +51,7 @@ This tool analyzes SQL statements in MyBatis XML files within SpringBoot project
   Features include:  
   功能包括：
   - Drag-and-drop entity positioning / 实体拖放定位
+  - Canvas panning with mouse hold / 长按鼠标平移画布 🆕
   - Zoom in/out capabilities / 缩放功能
   - Automatic layout optimization / 自动布局优化
   - Field relationship visualization / 字段关系可视化
@@ -150,6 +151,8 @@ python -m flask run --host=0.0.0.0 --port=5000
 4. **ER Diagram Interaction / ER 图表交互** 🆕  
    - **Drag entities**: Reposition tables for better visualization  
      拖动实体：重新定位表格以获得更好的可视化效果
+   - **Canvas panning**: Hold left mouse button on empty areas to pan the canvas  
+     画布平移：在空白区域长按鼠标左键来平移整个画布
    - **Zoom controls**: Zoom in/out and fit content to view  
      缩放控制：放大/缩小和适应内容到视图
    - **Download diagrams**: Export as SVG or PNG directly from the browser  
@@ -278,6 +281,7 @@ Edit `.env` file to customize:
 
 - **Interactive ER Diagrams / 交互式ER图表**: Fully interactive entity-relationship diagrams rendered directly in the browser using JointJS.
 - **Drag & Drop Interface / 拖拽式界面**: Reposition entities by dragging for custom layouts.
+- **Canvas Panning / 画布平移**: Hold left mouse button on empty space to navigate large diagrams.
 - **Zoom Controls / 缩放控制**: Zoom in/out and fit diagram to view for better visualization.
 - **Direct SVG/PNG Export / 直接SVG/PNG导出**: Export diagrams directly from the browser without server-side rendering.
 - **Field Relationship Labels / 字段关系标签**: Field names displayed on relationship lines for better understanding.

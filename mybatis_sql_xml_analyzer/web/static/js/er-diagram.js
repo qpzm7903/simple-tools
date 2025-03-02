@@ -1,6 +1,11 @@
 // ER Diagram renderer using JointJS
 let paper, graph;
 let currentScale = 1;
+let isPanning = false;
+let panningThreshold = 200; // Time in ms to hold before panning starts
+let panningTimer = null;
+let lastMousePosition = { x: 0, y: 0 };
+let paperOrigin = { x: 0, y: 0 };
 
 // Initialize the JointJS diagram
 function initializeERDiagram() {
@@ -20,18 +25,15 @@ function initializeERDiagram() {
         background: {
             color: 'rgba(0, 0, 0, 0.03)'
         },
-        interactive: true,
+        interactive: {
+            elementMove: true,
+            addLinkFromMagnet: false
+        },
         cellViewNamespace: namespace
     });
     
-    // Enable panning
-    paper.on('blank:pointerdown', function(evt, x, y) {
-        const scale = paper.scale();
-        paper.setOrigin(0, 0);
-        const normalizedX = x * scale.sx;
-        const normalizedY = y * scale.sy;
-        paper.translate(normalizedX, normalizedY);
-    });
+    // Setup panning behavior
+    setupPanning();
     
     // Setup zoom buttons
     document.getElementById('zoom-in-btn').addEventListener('click', function() {
@@ -53,6 +55,111 @@ function initializeERDiagram() {
     
     document.getElementById('download-png-btn').addEventListener('click', function() {
         downloadDiagram('png');
+    });
+}
+
+// Setup panning functionality
+function setupPanning() {
+    const canvas = document.getElementById('diagram-canvas');
+    
+    // Initialize paperOrigin with current paper translation
+    paperOrigin = { 
+        x: paper.options.origin.x || 0, 
+        y: paper.options.origin.y || 0 
+    };
+    
+    // Prevent text selection during panning
+    canvas.addEventListener('selectstart', function(e) {
+        if (isPanning) {
+            e.preventDefault();
+            return false;
+        }
+    });
+    
+    // Mouse down - start panning timer
+    canvas.addEventListener('mousedown', function(e) {
+        // Only proceed if we're not over an element
+        const elementBelow = document.elementFromPoint(e.clientX, e.clientY);
+        if (elementBelow && (elementBelow.tagName.toLowerCase() === 'rect' || 
+                            elementBelow.tagName.toLowerCase() === 'text' ||
+                            elementBelow.tagName.toLowerCase() === 'path')) {
+            return; // Skip if we're clicking on diagram elements
+        }
+        
+        // Store initial mouse position
+        lastMousePosition = { x: e.clientX, y: e.clientY };
+        
+        // Start a timer - if mouse is held down for threshold time, start panning
+        panningTimer = setTimeout(function() {
+            isPanning = true;
+            // Set cursor to indicate panning
+            canvas.style.cursor = 'grabbing';
+        }, panningThreshold);
+    });
+    
+    // Mouse move - pan if we're in panning mode
+    canvas.addEventListener('mousemove', function(e) {
+        if (isPanning) {
+            // Calculate how far the mouse has moved since the last position
+            const dx = e.clientX - lastMousePosition.x;
+            const dy = e.clientY - lastMousePosition.y;
+            
+            // Update the paper's translation by the delta (not absolute position)
+            // Use tx() and ty() to get current translation values
+            const currentTx = paper.translate().tx;
+            const currentTy = paper.translate().ty;
+            
+            // Apply the relative movement scaled appropriately
+            paper.translate(currentTx + (dx / currentScale), currentTy + (dy / currentScale));
+            
+            // Update the last mouse position for next move event
+            lastMousePosition = { x: e.clientX, y: e.clientY };
+        }
+    });
+    
+    // Mouse up - end panning
+    window.addEventListener('mouseup', function() {
+        if (panningTimer) {
+            clearTimeout(panningTimer);
+            panningTimer = null;
+        }
+        
+        if (isPanning) {
+            isPanning = false;
+            // Store the new paper origin
+            paperOrigin = { 
+                x: paper.translate().tx, 
+                y: paper.translate().ty 
+            };
+            // Reset cursor
+            canvas.style.cursor = '';
+        }
+    });
+    
+    // Mouse leave - end panning
+    canvas.addEventListener('mouseleave', function() {
+        if (panningTimer) {
+            clearTimeout(panningTimer);
+            panningTimer = null;
+        }
+        
+        if (isPanning) {
+            isPanning = false;
+            // Store the new paper origin
+            paperOrigin = { 
+                x: paper.translate().tx, 
+                y: paper.translate().ty 
+            };
+            // Reset cursor
+            canvas.style.cursor = '';
+        }
+    });
+    
+    // Prevent context menu from appearing on right-click
+    canvas.addEventListener('contextmenu', function(e) {
+        if (isPanning) {
+            e.preventDefault();
+        }
     });
 }
 
@@ -104,8 +211,15 @@ function renderERDiagram(relationshipData) {
     document.getElementById('download-svg-btn').disabled = false;
     document.getElementById('download-png-btn').disabled = false;
     
+    // Reset paper origin
+    paperOrigin = { x: 0, y: 0 };
+    paper.translate(0, 0);
+    
     // Fit the content
     fitContent();
+    
+    // After fitting content, update the paper origin
+    paperOrigin = { x: paper.options.origin.x, y: paper.options.origin.y };
 }
 
 // Create an entity (table) shape
