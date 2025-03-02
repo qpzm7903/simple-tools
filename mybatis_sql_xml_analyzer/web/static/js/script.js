@@ -3,6 +3,36 @@
  * Frontend JavaScript
  */
 
+// 确保 renderERDiagram 函数可用的全局检查
+// 当 er-diagram.js 加载完毕后执行分析
+let erDiagramLoaded = false;
+let pendingRelationships = null;
+
+// 创建一个用于等待 er-diagram.js 加载完成的函数
+function waitForERDiagram() {
+    if (window.renderERDiagram) {
+        erDiagramLoaded = true;
+        // 如果有待处理的关系数据，处理它
+        if (pendingRelationships) {
+            console.log("Processing pending relationships data");
+            window.renderERDiagram(pendingRelationships);
+            pendingRelationships = null;
+        }
+        return true;
+    }
+    return false;
+}
+
+// 尝试立即检查，如果不可用，则设置间隔检查
+if (!waitForERDiagram()) {
+    const checkInterval = setInterval(() => {
+        if (waitForERDiagram()) {
+            clearInterval(checkInterval);
+            console.log("ER Diagram module loaded successfully");
+        }
+    }, 200);
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // Get form and result elements
     const analysisForm = document.getElementById('analysis-form');
@@ -99,7 +129,13 @@ document.addEventListener('DOMContentLoaded', function() {
             enableExportButtons(data);
             
             // Render the JointJS diagram
-            renderERDiagram(data.relationships);
+            if (erDiagramLoaded && window.renderERDiagram) {
+                console.log("Rendering ER diagram...");
+                window.renderERDiagram(data.relationships);
+            } else {
+                console.log("ER diagram not yet loaded, queueing data");
+                pendingRelationships = data.relationships;
+            }
         })
         .catch(error => {
             console.error('Error:', error);
@@ -401,7 +437,13 @@ document.addEventListener('DOMContentLoaded', function() {
         resultMessage.textContent = `Found ${data.relationships.length} table relationships from ${data.stats.total_files} files.`;
         
         // Render JointJS diagram with relationship data
-        renderERDiagram(data.relationships);
+        if (erDiagramLoaded && window.renderERDiagram) {
+            console.log("Rendering ER diagram in displayResults...");
+            window.renderERDiagram(data.relationships);
+        } else {
+            console.log("ER diagram not yet loaded in displayResults, queueing data");
+            pendingRelationships = data.relationships;
+        }
         
         // Update relationships table
         const tableBody = document.querySelector('#relationships-table tbody');

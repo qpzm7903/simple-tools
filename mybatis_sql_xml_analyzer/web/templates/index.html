@@ -186,6 +186,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.4.1/backbone-min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jointjs/3.7.5/joint.min.js"></script>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/er-diagram.js') }}"></script>
+    <!-- 使用 ES 模块加载 ER 图表相关脚本 -->
+    <script type="module" src="{{ url_for('static', filename='js/er-diagram.js') }}"></script>
 </body>
 </html> 
