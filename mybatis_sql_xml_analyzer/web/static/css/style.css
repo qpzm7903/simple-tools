@@ -1,0 +1,261 @@
+/* Custom styles for MyBatis SQL Relationship Analyzer */
+
+:root {
+    /* Light mode variables */
+    --background-color: #f8f9fa;
+    --text-color: #212529;
+    --card-background: #ffffff;
+    --card-border: rgba(0, 0, 0, 0.125);
+    --card-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    --header-color: #495057;
+    --primary-btn-bg: #6c757d;
+    --primary-btn-hover: #5a6268;
+    --table-header-bg: #f8f9fa;
+    --table-border: #dee2e6;
+    --code-bg: #f8f9fa;
+    --alert-info-bg: #cff4fc;
+    --alert-info-text: #055160;
+    --alert-success-bg: #d1e7dd;
+    --alert-success-text: #0f5132;
+}
+
+[data-theme="dark"] {
+    /* Dark mode variables */
+    --background-color: #212529;
+    --text-color: #e9ecef;
+    --card-background: #343a40;
+    --card-border: rgba(255, 255, 255, 0.125);
+    --card-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.25);
+    --header-color: #adb5bd;
+    --primary-btn-bg: #495057;
+    --primary-btn-hover: #343a40;
+    --table-header-bg: #343a40;
+    --table-border: #495057;
+    --code-bg: #2b3035;
+    --alert-info-bg: #087990;
+    --alert-info-text: #cff4fc;
+    --alert-success-bg: #0f5132;
+    --alert-success-text: #d1e7dd;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Header styles */
+header h1 {
+    font-weight: 600;
+    color: var(--header-color);
+}
+
+/* Card and form styles */
+.card {
+    box-shadow: var(--card-shadow);
+    border-radius: 0.5rem;
+    background-color: var(--card-background);
+    border-color: var(--card-border);
+}
+
+.card-header {
+    background-color: var(--card-background);
+    border-bottom: 1px solid var(--card-border);
+}
+
+.card-header h5 {
+    margin-bottom: 0;
+    font-weight: 600;
+    color: var(--header-color);
+}
+
+/* Form control styles */
+.form-control {
+    background-color: var(--card-background);
+    color: var(--text-color);
+    border-color: var(--card-border);
+}
+
+.form-control:focus {
+    background-color: var(--card-background);
+    color: var(--text-color);
+}
+
+.form-text {
+    color: var(--header-color);
+}
+
+/* Tab styles */
+.nav-tabs {
+    border-color: var(--card-border);
+}
+
+.nav-tabs .nav-link {
+    color: var(--text-color);
+}
+
+.nav-tabs .nav-link.active {
+    background-color: var(--card-background);
+    color: var(--text-color);
+    border-color: var(--card-border) var(--card-border) var(--card-background);
+}
+
+/* Diagram container styles */
+#diagram-container {
+    min-height: 400px;
+    overflow: auto;
+    border-radius: 0.25rem;
+    background-color: var(--card-background) !important;
+    border-color: var(--card-border);
+}
+
+#diagram-image {
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
+}
+
+/* PlantUML code box */
+#plantuml-code {
+    min-height: 300px;
+    max-height: 600px;
+    overflow: auto;
+    white-space: pre-wrap;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9rem;
+    border-radius: 0.25rem;
+    background-color: var(--code-bg);
+    color: var(--text-color);
+    border-color: var(--card-border);
+}
+
+/* Table styles */
+.table-responsive {
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.table {
+    color: var(--text-color);
+}
+
+.table th {
+    position: sticky;
+    top: 0;
+    background-color: var(--table-header-bg);
+    box-shadow: 0 1px 0 var(--card-border);
+    color: var(--text-color);
+}
+
+.table td {
+    border-color: var(--table-border);
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Alert styles */
+.alert-info {
+    background-color: var(--alert-info-bg);
+    color: var(--alert-info-text);
+    border-color: var(--alert-info-bg);
+}
+
+.alert-success {
+    background-color: var(--alert-success-bg);
+    color: var(--alert-success-text);
+    border-color: var(--alert-success-bg);
+}
+
+/* Loading spinner */
+#loading {
+    padding: 2rem 0;
+}
+
+/* Custom button styles */
+.btn-primary {
+    background-color: var(--primary-btn-bg);
+    border-color: var(--primary-btn-bg);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-btn-hover);
+    border-color: var(--primary-btn-hover);
+}
+
+.btn-outline-secondary {
+    color: var(--text-color);
+    border-color: var(--card-border);
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--primary-btn-bg);
+    border-color: var(--primary-btn-bg);
+    color: #fff;
+}
+
+/* Footer styles */
+footer {
+    margin-top: 3rem;
+    padding: 1rem 0;
+    font-size: 0.9rem;
+    color: var(--header-color);
+}
+
+/* Theme toggle */
+.theme-toggle {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1000;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.theme-toggle:hover {
+    opacity: 1;
+}
+
+.theme-toggle-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--card-background);
+    color: var(--text-color);
+    border: 1px solid var(--card-border);
+    box-shadow: var(--card-shadow);
+    cursor: pointer;
+}
+
+.theme-toggle i {
+    font-size: 1.2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 1rem;
+    }
+    
+    #diagram-container {
+        min-height: 300px;
+    }
+    
+    .table-responsive {
+        max-height: 400px;
+    }
+    
+    .theme-toggle {
+        top: 0.5rem;
+        right: 0.5rem;
+    }
+} 

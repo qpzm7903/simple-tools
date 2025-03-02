@@ -1,0 +1,6 @@
+Flask==3.0.2
+lxml==4.9.3
+sqlparse==0.4.4
+plantuml==0.3.0
+python-dotenv==1.0.1
+six==1.16.0 
