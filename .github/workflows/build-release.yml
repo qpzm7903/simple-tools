@@ -1,0 +1,59 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - "v*"  # 当推送以 'v' 开头的标签时触发（如 v1.0.0）
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt pyinstaller
+
+      - name: Build executable
+        run: |
+          pyinstaller --onefile your_script.py
+          # Windows 下生成 .exe，其他系统生成对应文件
+          # 可根据不同系统调整命令（如 macOS 需要 --windowed）
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: executable-${{ matrix.os }}
+          path: dist/
+          # PyInstaller 默认输出到 dist 目录
+
+  release:
+    needs: build  # 依赖 build 任务完成
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}  # 使用触发的标签名
+          files: |
+            artifacts/executable-ubuntu-latest/*
+            artifacts/executable-windows-latest/*
+            artifacts/executable-macos-latest/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 自动使用 GitHub Token

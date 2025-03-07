@@ -11,7 +11,7 @@ project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
 
 # Use absolute imports instead of relative imports
-from mybatis_sql_xml_analyzer.web.app import start_app
+from web.app import start_app
 
 if __name__ == "__main__":
     start_app() 

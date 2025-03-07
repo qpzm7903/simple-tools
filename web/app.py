@@ -5,9 +5,9 @@ Provides a web interface for analyzing MyBatis XML files.
 import os
 import logging
 from flask import Flask, render_template, request, jsonify, send_from_directory
-from mybatis_sql_xml_analyzer.core.analyzer import Analyzer
-from mybatis_sql_xml_analyzer.utils.config import Config
-from mybatis_sql_xml_analyzer.utils.exporter import Exporter
+from core.analyzer import Analyzer
+from utils.config import Config
+from utils.exporter import Exporter
 
 
 # Configure logging

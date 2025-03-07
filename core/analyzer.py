@@ -3,10 +3,10 @@ Main Analyzer module.
 Orchestrates the entire analysis process.
 """
 import logging
-from mybatis_sql_xml_analyzer.core.sql_parser import SqlParser
-from mybatis_sql_xml_analyzer.core.relationship_extractor import RelationshipExtractor
-from mybatis_sql_xml_analyzer.core.normalizer import Normalizer
-from mybatis_sql_xml_analyzer.core.plantuml_generator import PlantUmlGenerator
+from core.sql_parser import SqlParser
+from core.relationship_extractor import RelationshipExtractor
+from core.normalizer import Normalizer
+from core.plantuml_generator import PlantUmlGenerator
 
 
 class Analyzer:
