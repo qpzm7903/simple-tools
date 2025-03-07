@@ -5,6 +5,12 @@ on:
     tags:
       - "v*"  # 当推送以 'v' 开头的标签时触发（如 v1.0.0）
 
+# 添加明确的权限声明
+permissions:
+  contents: write  # 允许工作流创建 releases
+  packages: read
+  actions: read
+
 jobs:
   build:
     runs-on: windows-latest
@@ -132,6 +138,9 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
+    # 确保在这一步也有必要的权限
+    permissions:
+      contents: write
     steps:
       - name: Download all artifacts
         uses: actions/download-artifact@v4
@@ -157,5 +166,5 @@ jobs:
           files: |
             artifacts/mybatis_sql_analyzer-windows/*
             artifacts/mybatis_sql_analyzer-zip/*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # 直接从GitHub提供的令牌获取必要权限
+          token: ${{ github.token }}
