@@ -5,7 +5,7 @@ a = Analysis(
     ['mybatis_entry_final.py'],
     pathex=[],
     binaries=[],
-    datas=[('web/templates', 'web/templates'), ('web/static', 'web/static'), ('examples', 'examples'), ('core', 'core'), ('utils', 'utils'), ('.env.example', '.')],
+    datas=[('.env.example', '.')],
     hiddenimports=['engineio.async_drivers.threading', 'sqlparse.tokens', 'sqlparse.sql', 'lxml.etree', 'plantuml', 'six', 'web', 'web.app', 'core', 'core.analyzer', 'utils', 'utils.config', 'utils.exporter', 'flask', 'flask.templating', 'jinja2', 'werkzeug'],
     hookspath=[],
     hooksconfig={},
