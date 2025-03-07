@@ -332,3 +332,35 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 <p align="center">Made with ❤️ for database developers and designers</p>
 <p align="center">为数据库开发人员和设计师精心打造</p>
 
+## Windows可执行文件构建
+
+本项目支持使用PyInstaller将应用程序打包为Windows可执行文件，使得用户无需安装Python和其他依赖即可运行。
+
+### 构建步骤
+
+1. 确保已安装所有依赖：
+   ```
+   pip install -r requirements.txt
+   pip install pyinstaller
+   ```
+
+2. 运行构建脚本：
+   ```
+   python build_executable.py
+   ```
+
+3. 成功构建后，可执行文件位于 `dist/mybatis_sql_analyzer.exe`
+
+### 使用可执行文件
+
+1. 双击运行 `mybatis_sql_analyzer.exe`
+2. 等待应用程序启动（会打开命令行窗口和浏览器）
+3. 在浏览器中访问应用界面（通常为 http://localhost:5000）
+4. 所有生成的输出文件将保存在可执行文件所在目录的 `output` 文件夹中
+
+### 注意事项
+
+- 首次启动时，Windows防火墙可能会提示是否允许网络访问，请选择"允许"
+- 应用程序会在当前目录创建 `output` 文件夹用于存储生成的文件
+- 关闭命令行窗口将停止应用程序
+

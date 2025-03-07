@@ -1,4 +1,4 @@
-name: Build and Release
+name: Build and Release Windows Executable
 
 on:
   push:
@@ -7,10 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: windows-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -18,28 +15,64 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.10"  # 使用3.10确保更好的兼容性
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt pyinstaller
+          pip install -r requirements.txt
+          pip install pyinstaller
 
-      - name: Build executable
+      - name: Copy final entry file
         run: |
-          pyinstaller --onefile your_script.py
-          # Windows 下生成 .exe，其他系统生成对应文件
-          # 可根据不同系统调整命令（如 macOS 需要 --windowed）
+          if (Test-Path -Path "temp_build\mybatis_entry_final.py") {
+            Copy-Item -Path "temp_build\mybatis_entry_final.py" -Destination "mybatis_entry_final.py"
+            Write-Output "Copied final entry file"
+          } else {
+            Write-Output "Using existing mybatis_entry_final.py"
+          }
 
-      - name: Upload artifact
+      - name: Build executable using spec file
+        run: |
+          if (Test-Path -Path "mybatis_sql_analyzer.spec") {
+            pyinstaller mybatis_sql_analyzer.spec
+            Write-Output "Built using spec file"
+          } else {
+            Write-Output "Spec file not found, using build script"
+            python build_executable.py
+          }
+
+      - name: Copy README to dist directory
+        shell: pwsh
+        run: |
+          if (Test-Path -Path "README.md") {
+            Copy-Item -Path "README.md" -Destination "dist\README.md"
+            Write-Output "Copied README.md to dist directory"
+          } else {
+            Write-Output "README.md not found in project root"
+          }
+
+      - name: Create zip archive
+        run: |
+          Compress-Archive -Path dist\* -DestinationPath mybatis_sql_analyzer_windows.zip
+          Write-Output "Created zip archive"
+
+      - name: Upload executable artifact
         uses: actions/upload-artifact@v4
         with:
-          name: executable-${{ matrix.os }}
-          path: dist/
-          # PyInstaller 默认输出到 dist 目录
+          name: mybatis_sql_analyzer-windows
+          path: dist/mybatis_sql_analyzer.exe
+          if-no-files-found: error
+
+      - name: Upload zip archive artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mybatis_sql_analyzer-zip
+          path: mybatis_sql_analyzer_windows.zip
+          if-no-files-found: error
 
   release:
-    needs: build  # 依赖 build 任务完成
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Download all artifacts
@@ -50,10 +83,21 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.ref_name }}  # 使用触发的标签名
+          tag_name: ${{ github.ref_name }}
+          name: "MyBatis SQL Analyzer ${{ github.ref_name }}"
+          body: |
+            # MyBatis SQL Analyzer ${{ github.ref_name }}
+            
+            Windows版本可执行文件
+            
+            ## 安装说明
+            
+            1. 下载 `.exe` 文件或 `.zip` 文件
+            2. 直接运行 `.exe` 文件即可使用
+            
+            详细使用说明请参阅压缩包中的 README.md
           files: |
-            artifacts/executable-ubuntu-latest/*
-            artifacts/executable-windows-latest/*
-            artifacts/executable-macos-latest/*
+            artifacts/mybatis_sql_analyzer-windows/*
+            artifacts/mybatis_sql_analyzer-zip/*
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 自动使用 GitHub Token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
